@@ -1,11 +1,5 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App";
-import registerServiceWorker from "./registerServiceWorker";
-
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import logger from "redux-logger";
-import { Provider } from "react-redux";
 
 const mathReducer = (
   state = {
@@ -57,8 +51,14 @@ const userReducer = (
   return state;
 };
 
+// useless... logger is better
+const myLogger = store => next => action => {
+  console.log("Logged Action: ", action);
+  next(action);
+};
+
 const store = createStore(
-  combineReducers({ math: mathReducer, user: userReducer }),
+  combineReducers({ mathReducer, userReducer }),
   {},
   applyMiddleware(logger)
 );
@@ -67,10 +67,27 @@ store.subscribe(() => {
   // console.log("Store updated", store.getState());
 });
 
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById("root")
-);
-registerServiceWorker();
+store.dispatch({
+  type: "ADD",
+  payload: 100
+});
+
+store.dispatch({
+  type: "ADD",
+  payload: 22
+});
+
+store.dispatch({
+  type: "ADD",
+  payload: 10
+});
+
+store.dispatch({
+  type: "SUBTRACT",
+  payload: 80
+});
+
+store.dispatch({
+  type: "SET_AGE",
+  payload: 27
+});
